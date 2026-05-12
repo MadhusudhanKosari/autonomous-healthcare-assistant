@@ -9,17 +9,10 @@ langchain-community
 
 chromadb
 
-sentence-transformers
-
 groq
 
 pymupdf
-
 pypdf
-
-pytesseract
-pdf2image
-pillow
 
 python-dotenv
 

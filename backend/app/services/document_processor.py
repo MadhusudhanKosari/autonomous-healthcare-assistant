@@ -7,10 +7,10 @@ from app.services.pdf_service import (
     extract_text_from_pdf
 )
 
-from app.services.ocr_service import (
+# from app.services.ocr_service import (
 
-    extract_text_with_ocr
-)
+#     extract_text_with_ocr
+# )
 
 from app.services.chunking_service import (
 
@@ -38,15 +38,15 @@ def process_document(
         file_path
     )
 
-    # OCR FALLBACK
-    if len(extracted_text.strip()) < 100:
+    # # OCR FALLBACK
+    # if len(extracted_text.strip()) < 100:
 
-        print("\nUsing OCR Extraction...\n")
+    #     print("\nUsing OCR Extraction...\n")
 
-        extracted_text = extract_text_with_ocr(
+    #     extracted_text = extract_text_with_ocr(
 
-            file_path
-        )
+    #         file_path
+    #     )
 
     print("\nEXTRACTED TEXT:\n")
 
