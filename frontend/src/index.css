@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+body {
+
+  margin: 0;
+
+  padding: 0;
+
+  font-family: Arial, sans-serif;
+
+  background:
+
+    radial-gradient(circle at top,
+
+    #172554,
+
+    #020617);
+
+  color: white;
+
+  overflow: hidden;
+}
+
+
+::-webkit-scrollbar {
+
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+
+  background: #334155;
+
+  border-radius: 20px;
+}
