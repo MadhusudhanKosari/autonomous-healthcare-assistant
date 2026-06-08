@@ -1,4 +1,4 @@
-🩺 Autonomous Healthcare Assistant
+🩺 Autonomous Healthcare Assistant  
 
 An AI-powered healthcare assistant built with FastAPI, React, LangChain, LangGraph, ChromaDB, and Groq LLMs that can understand medical reports, answer healthcare-related queries, perform intelligent document retrieval (RAG), maintain conversational memory, and provide AI-assisted healthcare guidance.
 
