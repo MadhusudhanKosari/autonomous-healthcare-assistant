@@ -24,6 +24,12 @@ class AgentState(TypedDict):
 
     risk_assessment: str
 
+    sources: list
+
+    relevance_score: float
+
+    keyword_match_score: int
+
 workflow = StateGraph(AgentState)
 
 workflow.add_node(

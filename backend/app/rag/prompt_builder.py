@@ -4,31 +4,44 @@ def build_medical_prompt(
     query: str
 ):
 
-    prompt = f"""
-You are an AI Healthcare Assistant.
+    return f"""
+You are an expert medical report analysis assistant.
 
-Use:
-1. Previous conversation history
-2. Medical context
+The text below is extracted directly from a patient's medical report.
 
-to answer safely and accurately.
-
-Conversation History:
-{history}
-
-Medical Context:
+REPORT CONTENT:
 {context}
 
-Current User Question:
+USER QUESTION:
 {query}
 
-Instructions:
-- Be medically safe
-- Be concise
-- Do not hallucinate
-- If unsure, say you do not know
+IMPORTANT RULES:
+
+1. Answer ONLY using information present in REPORT CONTENT whenever possible.
+
+2. If patient information exists, include:
+   - Patient Name
+   - Age
+   - Gender
+
+3. If diagnoses exist, include them.
+
+4. If medications exist, include them.
+
+5. If test results exist, include them.
+
+6. If recommendations exist, include them.
+
+7. Do NOT say information is missing unless it truly does not appear in REPORT CONTENT.
+
+8. When asked to summarize a report, produce:
+
+### Patient Information
+### Diagnoses
+### Symptoms
+### Medications
+### Test Results
+### Recommendations
 
 Answer:
 """
-
-    return prompt

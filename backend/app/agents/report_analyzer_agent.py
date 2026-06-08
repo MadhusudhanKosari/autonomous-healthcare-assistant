@@ -1,5 +1,6 @@
 from app.services.llm_service import generate_response
 
+
 def report_analyzer_agent(state):
 
     context = state["context"]
@@ -7,20 +8,29 @@ def report_analyzer_agent(state):
     query = state["query"]
 
     prompt = f"""
-You are a medical report analysis assistant.
+You are an expert medical report analysis agent.
 
-Analyze the medical context carefully.
-
-Medical Context:
+REPORT CONTENT:
 {context}
 
-User Question:
+USER QUESTION:
 {query}
 
-Provide:
-- important findings
-- simplified explanation
-- possible concerns
+Your task:
+
+1. Extract patient information if available
+2. Extract diagnoses
+3. Extract symptoms
+4. Extract medications
+5. Extract lab results
+6. Extract doctor recommendations
+7. Answer the user's question directly
+
+Rules:
+- Use only report information
+- Do not invent data
+- If information is absent say:
+  "Not found in report"
 
 Answer:
 """

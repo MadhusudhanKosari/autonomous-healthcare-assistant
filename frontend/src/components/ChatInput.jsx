@@ -1,56 +1,125 @@
+import { useState } from "react";
+import "./ChatInput.css";
+import { sendMessage } from "../services/api";
+
 function ChatInput({
-
-    message,
-
-    setMessage,
-
-    sendMessage,
-
-    handleFileUpload
-
+  setMessages,
+  messages,
+  onUpload,
+  setChatHistory
 }) {
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    return (
+  const handleSend = async () => {
+    if (!input.trim()) return;
 
-        <div className="p-5 border-t border-slate-800 bg-slate-900">
+    const currentInput = input;
 
-            <div className="flex items-center gap-3 bg-slate-800 border border-slate-700 rounded-2xl px-4 py-3 shadow-xl">
+    const userMessage = {
+      role: "user",
+      content: currentInput
+    };
 
-                <label
-                    className="cursor-pointer text-2xl hover:scale-110 transition"
-                >
-                    📎
+    setMessages((prev) => [
+      ...prev,
+      userMessage
+    ]);
 
-                    <input
-                        type="file"
-                        accept=".pdf"
-                        hidden
-                        onChange={handleFileUpload}
-                    />
+    // Add to recent chats
+    if (setChatHistory) {
+      setChatHistory((prev) => [
+        currentInput,
+        ...prev.filter(
+          (chat) => chat !== currentInput
+        )
+      ].slice(0, 20));
+    }
 
-                </label>
+    setInput("");
 
-                <textarea
-                    className="flex-1 bg-transparent outline-none text-white resize-none text-lg"
-                    rows="1"
-                    placeholder="Message Healthcare AI..."
-                    value={message}
-                    onChange={(e) =>
-                        setMessage(e.target.value)
-                    }
-                />
+    try {
+      setLoading(true);
 
-                <button
-                    onClick={sendMessage}
-                    className="bg-blue-600 hover:bg-blue-700 transition px-6 py-3 rounded-xl font-semibold"
-                >
-                    Send
-                </button>
+      const response = await sendMessage(
+        currentInput
+      );
 
-            </div>
+      const aiMessage = {
+        role: "assistant",
+        content: response.data
+      };
 
-        </div>
-    )
+      setMessages((prev) => [
+        ...prev,
+        aiMessage
+      ]);
+    } catch (error) {
+      console.error(error);
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content:
+            "Error generating response."
+        }
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      onUpload(file);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (
+      e.key === "Enter" &&
+      !e.shiftKey
+    ) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  return (
+    <div className="chat-input-container">
+
+      <textarea
+        value={input}
+        onChange={(e) =>
+          setInput(e.target.value)
+        }
+        onKeyDown={handleKeyDown}
+        placeholder="Ask healthcare questions..."
+      />
+
+      <label className="upload-btn">
+        📎
+
+        <input
+          type="file"
+          accept=".pdf"
+          onChange={handleFileChange}
+          hidden
+        />
+      </label>
+
+      <button
+        onClick={handleSend}
+        disabled={loading}
+      >
+        {loading ? "..." : "Send"}
+      </button>
+
+    </div>
+  );
 }
 
-export default ChatInput
+export default ChatInput;

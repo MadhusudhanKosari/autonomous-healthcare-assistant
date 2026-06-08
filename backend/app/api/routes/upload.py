@@ -1,36 +1,85 @@
-from fastapi import APIRouter, UploadFile, File
 import os
 
-from app.services.document_processor import process_document
+from fastapi import APIRouter
+from fastapi import UploadFile
+from fastapi import File
+from app.services.report_memory import (
+    set_active_report
+)
+
+from app.services.document_processor import (
+    process_document
+)
+from app.services.document_processor import (
+    process_document
+)
+
+from app.services.session_service import (
+    set_current_report
+)
 
 router = APIRouter()
 
 UPLOAD_DIR = "uploads"
 
-if not os.path.exists(UPLOAD_DIR):
-    os.makedirs(UPLOAD_DIR)
+os.makedirs(
+    UPLOAD_DIR,
+    exist_ok=True
+)
+
 
 @router.post("/")
-async def upload_file(file: UploadFile = File(...)):
+async def upload_pdf(
+    file: UploadFile = File(...)
+):
 
-    if file.content_type != "application/pdf":
-
-        return {
-            "error": "Only PDF files allowed"
-        }
-
-    file_path = f"{UPLOAD_DIR}/{file.filename}"
+    file_path = os.path.join(
+        UPLOAD_DIR,
+        file.filename
+    )
 
     with open(file_path, "wb") as buffer:
 
-        content = await file.read()
+        buffer.write(
+            await file.read()
+        )
 
-        buffer.write(content)
+    process_document(
+        file_path
+    )
 
-    total_chunks = process_document(file_path)
+    set_active_report(
+        file.filename
+    )
+
+    # IMPORTANT
+    chunks_created = process_document(
+        file_path
+    )
+
+    set_current_report(
+        file.filename
+    )
 
     return {
-        "filename": file.filename,
-        "chunks_stored": total_chunks,
-        "message": "Document processed successfully"
+        "message":
+        "PDF uploaded and indexed successfully",
+
+        "filename":
+        file.filename,
+
+        "chunks":
+        chunks_created
+    }
+
+
+@router.get("/files")
+async def get_uploaded_files():
+
+    files = os.listdir(
+        UPLOAD_DIR
+    )
+
+    return {
+        "files": files
     }

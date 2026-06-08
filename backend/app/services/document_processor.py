@@ -1,7 +1,7 @@
 import uuid
 
 import os
-
+from app.utils.text_cleaner import clean_medical_text
 from app.services.pdf_service import (
 
     extract_text_from_pdf
@@ -34,10 +34,20 @@ def process_document(
     )
 
     extracted_text = extract_text_from_pdf(
-
         file_path
     )
 
+    extracted_text = clean_medical_text(
+        extracted_text
+    )
+    import re
+
+    extracted_text = re.sub(
+        r"Sample questions for autonomous healthcare agent:.*?(?=Page \d+|$)",
+        "",
+        extracted_text,
+        flags=re.DOTALL
+    )
     # # OCR FALLBACK
     # if len(extracted_text.strip()) < 100:
 

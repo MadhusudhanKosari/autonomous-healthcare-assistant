@@ -7,12 +7,11 @@ from app.services.chat_memory import (
 router = APIRouter()
 
 
-@router.post("/clear")
-async def clear_chat():
+@router.post("/new-chat")
+async def new_chat():
 
     clear_memory()
 
     return {
-        "status": "success",
-        "message": "Chat memory cleared"
+        "message": "new chat started"
     }

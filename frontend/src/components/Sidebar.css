@@ -1,0 +1,96 @@
+.sidebar {
+
+  width: 300px;
+
+  background: #020617;
+
+  border-right: 1px solid #1e293b;
+
+  padding: 20px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+
+  overflow-y: auto;
+}
+
+
+.sidebar h2 {
+
+  font-size: 32px;
+
+  color: white;
+}
+
+
+.new-chat-btn {
+
+  background: #2563eb;
+
+  border: none;
+
+  color: white;
+
+  padding: 15px;
+
+  border-radius: 12px;
+
+  cursor: pointer;
+
+  font-size: 16px;
+
+  font-weight: bold;
+}
+
+
+.new-chat-btn:hover {
+
+  background: #1d4ed8;
+}
+
+
+.uploaded-section {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+
+.uploaded-section h3 {
+
+  color: white;
+}
+
+
+.file-item {
+
+  background: #1e293b;
+
+  padding: 14px;
+
+  border-radius: 12px;
+
+  color: white;
+
+  font-size: 14px;
+
+  line-height: 1.5;
+
+  word-wrap: break-word;
+
+  overflow-wrap: break-word;
+
+  white-space: normal;
+}
+
+
+.empty-text {
+
+  color: #94a3b8;
+}

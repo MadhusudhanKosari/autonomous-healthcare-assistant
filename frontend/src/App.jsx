@@ -1,154 +1,99 @@
+import "./App.css";
+
 import {
-
-  useEffect,
   useState
+} from "react";
 
-} from "react"
+import Sidebar from "./components/Sidebar";
+import ChatBox from "./components/ChatBox";
+import ChatInput from "./components/ChatInput";
 
-import { v4 as uuidv4 } from "uuid"
-
-import Sidebar from "./components/Sidebar"
-
-import ChatBox from "./components/ChatBox"
+import {
+  uploadPDF,
+  startNewChat
+} from "./services/api";
 
 function App() {
 
-  const [messages, setMessages] = useState([])
-  const [documents, setDocuments] = useState([])
+  const [messages, setMessages] =
+    useState([]);
 
-  const [sessionId, setSessionId] = useState(
+  const [chatHistory, setChatHistory] =
+    useState([]);
 
-    uuidv4()
-  )
-
-  const [chatHistory, setChatHistory] = useState([])
-
-
-  // LOAD SAVED HISTORY
-  useEffect(() => {
-
-    const savedHistory = localStorage.getItem(
-
-      "healthcare_chat_history"
-    )
-
-    if (savedHistory) {
-
-      setChatHistory(
-
-        JSON.parse(savedHistory)
-      )
-    }
-
-  }, [])
-
-
-  // SAVE HISTORY AUTOMATICALLY
-  useEffect(() => {
-
-    localStorage.setItem(
-
-      "healthcare_chat_history",
-
-      JSON.stringify(chatHistory)
-    )
-
-  }, [chatHistory])
-
-
-  const startNewChat = () => {
-
-    setMessages([])
-
-    setSessionId(uuidv4())
-  }
-
-
-  const saveCurrentChat = (
-
-    updatedMessages,
-
-    title
-
+  const handleUpload = async (
+    file
   ) => {
 
-    if (!title) return
+    try {
 
-    const newChat = {
+      await uploadPDF(file);
 
-      id: sessionId,
+      alert(
+        "PDF uploaded successfully"
+      );
 
-      title: title.slice(0, 30),
+    } catch (error) {
 
-      messages: updatedMessages
+      console.error(error);
+
+      alert(
+        "Upload failed"
+      );
     }
+  };
 
-    setChatHistory((prev) => {
+  const handleNewChat = async () => {
 
-      const filtered = prev.filter(
+    try {
 
-        (chat) => chat.id !== sessionId
-      )
+      await startNewChat();
 
-      return [
+      setMessages([]);
 
-        newChat,
+      setChatHistory([]);
 
-        ...filtered
-      ]
-    })
-  }
+    } catch (error) {
 
-
-  const loadChat = (chat) => {
-
-    setMessages(chat.messages)
-
-    setSessionId(chat.id)
-  }
-
+      console.error(error);
+    }
+  };
 
   return (
 
-    <div className="flex flex-col md:flex-row h-screen">
+    <div className="app">
 
       <Sidebar
-        startNewChat={startNewChat}
         chatHistory={chatHistory}
-        loadChat={loadChat}
-        documents={documents}
+        onNewChat={handleNewChat}
       />
 
-      <div className="flex-1 flex flex-col">
+      <div className="main-content">
 
-        <div className="p-6 border-b border-slate-800">
+        <div className="header">
 
-          <h1 className="text-4xl font-bold text-center">
-
+          <h1>
             Autonomous Healthcare Assistant
-
           </h1>
 
         </div>
 
-        <div className="flex-1 overflow-hidden">
+        <ChatBox
+          messages={messages}
+        />
 
-          <ChatBox
-            messages={messages}
-            setMessages={setMessages}
-            sessionId={sessionId}
-            setSessionId={setSessionId}
-            saveCurrentChat={saveCurrentChat}
-            documents={documents}
-            setDocuments={setDocuments}
-          />
-
-        </div>
+        <ChatInput
+          messages={messages}
+          setMessages={setMessages}
+          setChatHistory={setChatHistory}
+          chatHistory={chatHistory}
+          onUpload={handleUpload}
+        />
 
       </div>
 
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

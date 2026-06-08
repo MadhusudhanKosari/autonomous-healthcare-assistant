@@ -1,23 +1,31 @@
 from app.services.llm_service import generate_response
 
+
 def recommendation_agent(state):
 
     analysis = state["analysis"]
 
+    query = state["query"]
+
     prompt = f"""
-You are a healthcare recommendation assistant.
+You are a healthcare recommendation agent.
 
-Based on this medical analysis:
+User Question:
+{query}
 
+Medical Analysis:
 {analysis}
 
-Provide:
-- healthy lifestyle recommendations
-- diet suggestions
-- hydration advice
-- exercise suggestions
+Instructions:
 
-Avoid dangerous medical claims.
+- If user asks report-specific question,
+  answer directly.
+
+- If diagnosis exists,
+  provide useful lifestyle guidance.
+
+- If no recommendation needed,
+  simply return the answer.
 
 Answer:
 """
