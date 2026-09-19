@@ -26,18 +26,16 @@ GROQ_MODEL = os.getenv(
 
 
 # ===================================
-# GEMINI CONFIG
+# GEMINI CONFIG (optional fallback)
 # ===================================
 
-genai.configure(
-    api_key=os.getenv(
-        "GEMINI_API_KEY"
-    )
-)
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 
-gemini_model = genai.GenerativeModel(
-    "gemini-1.5-flash"
-)
+gemini_model = None
+
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
+    gemini_model = genai.GenerativeModel("gemini-1.5-flash")
 
 
 # ===================================
@@ -76,6 +74,9 @@ def generate_with_groq(
 def generate_with_gemini(
     prompt: str
 ):
+
+    if gemini_model is None:
+        raise RuntimeError("Gemini API key not configured")
 
     response = (
         gemini_model.generate_content(
